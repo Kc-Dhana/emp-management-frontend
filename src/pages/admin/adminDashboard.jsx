@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Outlet } from "react-router-dom";
 import { FiMenu, FiUserPlus, FiEdit, FiEye, FiTrash2, FiX } from "react-icons/fi";
 
 export default function AdminDashboard() {
@@ -8,7 +8,7 @@ export default function AdminDashboard() {
 
   const handleNavigate = (path) => {
     navigate(path);
-    setSidebarOpen(false); // Close sidebar after navigation on mobile
+    setSidebarOpen(false);
   };
 
   return (
@@ -18,7 +18,6 @@ export default function AdminDashboard() {
         className={`fixed top-0 left-0 z-30 w-64 h-full bg-white shadow-lg transform transition-transform duration-300 ease-in-out
           ${sidebarOpen ? "translate-x-0" : "-translate-x-full"} md:translate-x-0 md:static md:shadow-none`}
       >
-        {/* Sidebar Header with close button (mobile only) */}
         <div className="flex items-center justify-between p-6 border-b border-gray-200">
           <span className="font-bold text-2xl">Admin Dashboard</span>
           <button
@@ -29,29 +28,28 @@ export default function AdminDashboard() {
           </button>
         </div>
 
-        {/* Sidebar Nav */}
         <nav className="flex flex-col p-4 space-y-4">
           <button
             className="flex items-center gap-2 p-3 text-gray-700 hover:bg-indigo-500 hover:text-white rounded"
-            onClick={() => handleNavigate("/admin/create")}
+            onClick={() => handleNavigate("employee-create")}
           >
             <FiUserPlus size={20} /> Create Employee
           </button>
           <button
             className="flex items-center gap-2 p-3 text-gray-700 hover:bg-indigo-500 hover:text-white rounded"
-            onClick={() => handleNavigate("/admin/update")}
+            onClick={() => handleNavigate("employee-update")}
           >
             <FiEdit size={20} /> Update Employee
           </button>
           <button
             className="flex items-center gap-2 p-3 text-gray-700 hover:bg-indigo-500 hover:text-white rounded"
-            onClick={() => handleNavigate("/admin/view")}
+            onClick={() => handleNavigate("employee-view")}
           >
             <FiEye size={20} /> View Employees
           </button>
           <button
             className="flex items-center gap-2 p-3 text-red-600 hover:bg-red-600 hover:text-white rounded"
-            onClick={() => handleNavigate("/admin/delete")}
+            onClick={() => handleNavigate("employee-delete")}
           >
             <FiTrash2 size={20} /> Delete Employee
           </button>
@@ -69,17 +67,12 @@ export default function AdminDashboard() {
             <FiMenu size={28} />
           </button>
           <h1 className="text-xl font-semibold">Admin Dashboard</h1>
-          <div></div> {/* Placeholder for alignment */}
+          <div></div>
         </header>
 
-        {/* Content */}
+        {/* Dynamic Content from Routes */}
         <main className="p-6 overflow-auto">
-          <h2 className="text-3xl font-bold mb-6">
-            Welcome to Employee Management
-          </h2>
-          <p className="text-gray-600 max-w-xl">
-            Use the sidebar to navigate between creating, updating, viewing, and deleting employees.
-          </p>
+          <Outlet />
         </main>
       </div>
     </div>
