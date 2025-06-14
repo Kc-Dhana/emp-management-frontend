@@ -1,13 +1,20 @@
 import './App.css'
+import { BrowserRouter, Routes, Route} from "react-router-dom";
 import { Toaster } from 'react-hot-toast';
+import AdminDashboard from './pages/admin/adminDashboard';
 
 function App() {
 
   return (
-    <>
-    <Toaster />
-      <h1 className='text-3xl font-bold underline text-blue-600'>Hello Tailwind! test</h1>
-    </>
+    <BrowserRouter>
+    <Toaster position="top-right" reverseOrder={false}/>
+      <Routes>
+
+        <Route path="/" element={<AdminDashboard />} />
+        
+      </Routes>
+      
+    </BrowserRouter>
   )
 }
 
