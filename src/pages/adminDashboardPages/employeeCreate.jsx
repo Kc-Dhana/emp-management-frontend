@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { upploadMediaToSupabase, supabase } from "../../utill/mediaUpload";
+import toast from "react-hot-toast";
 
 export default function EmployeeCreate() {
   const navigate = useNavigate();
@@ -46,31 +47,33 @@ export default function EmployeeCreate() {
     return Object.keys(newErrors).length === 0;
   };
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    if (!validate()) return;
-    setLoading(true);
+      const handleSubmit = async (e) => {
+      e.preventDefault();
+      if (!validate()) return;
+      setLoading(true);
 
-    try {
-      await upploadMediaToSupabase(profileImage);
-      const imageUrl = supabase.storage.from("images").getPublicUrl(profileImage.name).data.publicUrl;
+      try {
+        await upploadMediaToSupabase(profileImage);
+        const imageUrl = supabase.storage.from("images").getPublicUrl(profileImage.name).data.publicUrl;
 
-      const payload = {
-        ...formData,
-        salary: Number(formData.salary),
-        joinDate: joinDate || new Date().toISOString(),
-        profileImage: imageUrl,
-      };
+        const payload = {
+          ...formData,
+          salary: Number(formData.salary),
+          joinDate: joinDate || new Date().toISOString(),
+          profileImage: imageUrl,
+        };
 
-      await axios.post(import.meta.env.VITE_BACKEND_URL + "/api/employees", payload);
-      navigate("/employee-view");
-    } catch (error) {
-      console.error("❌ Failed to create employee:", error.response?.data || error.message);
-      alert("Employee creation failed. Check console for details.");
-    } finally {
-      setLoading(false);
-    }
-  };
+        await axios.post(import.meta.env.VITE_BACKEND_URL + "/api/employees", payload);
+
+        toast.success("Employee created successfully!");
+        navigate("/employee-view");
+      } catch (error) {
+        console.error("❌ Failed to create employee:", error.response?.data || error.message);
+        toast.error("Failed to create employee.");
+      } finally {
+        setLoading(false);
+      }
+    };
 
   return (
     <div className="max-w-2xl mx-auto bg-white p-6 rounded-xl shadow-md mt-6 mb-12 md:mt-12">
