@@ -11,6 +11,7 @@ function App() {
 
   return (
     <Router>
+      <Toaster position="top-right" reverseOrder={false} />
       <Routes>
         <Route path="/" element={<AdminDashboard />}>
           <Route index element={<div>Welcome to Employee Management</div>} />
