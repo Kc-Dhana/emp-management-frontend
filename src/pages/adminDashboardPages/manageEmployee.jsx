@@ -2,13 +2,13 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import toast from "react-hot-toast";
 import { FaEdit, FaTrash, FaEye } from "react-icons/fa";
-import { useNavigate } from "react-router-dom";
 
 export default function ManageEmployee() {
   const [employees, setEmployees] = useState([]);
   const [loading, setLoading] = useState(false);
-  const [selectedEmployee, setSelectedEmployee] = useState(null);
-  const navigate = useNavigate();
+  const [selectedEmployee, setSelectedEmployee] = useState(null); // for View modal
+  const [editModalOpen, setEditModalOpen] = useState(false);
+  const [selectedEmployeeForEdit, setSelectedEmployeeForEdit] = useState(null);
 
   const fetchEmployees = async () => {
     try {
@@ -34,13 +34,44 @@ export default function ManageEmployee() {
     }
   };
 
-  const handleEdit = (id) => navigate(`/employee-update/${id}`);
+  // Open View modal
   const handleView = (id) => {
     const employee = employees.find(e => e._id === id);
     setSelectedEmployee(employee);
   };
 
-  const closeModal = () => setSelectedEmployee(null);
+  const closeViewModal = () => setSelectedEmployee(null);
+
+  // Open Edit modal with pre-filled data
+  const handleEdit = (id) => {
+    const employee = employees.find(e => e._id === id);
+    setSelectedEmployeeForEdit(employee);
+    setEditModalOpen(true);
+  };
+
+  const closeEditModal = () => {
+    setEditModalOpen(false);
+    setSelectedEmployeeForEdit(null);
+  };
+
+  // Handle input change in edit form
+  const handleEditChange = (field, value) => {
+    setSelectedEmployeeForEdit(prev => ({ ...prev, [field]: value }));
+  };
+
+  // Submit update form
+  const handleUpdateSubmit = async (e) => {
+    e.preventDefault();
+    try {
+      const { _id, ...updatedData } = selectedEmployeeForEdit;
+      await axios.put(`${import.meta.env.VITE_BACKEND_URL}/api/employees/${_id}`, updatedData);
+      toast.success("Employee updated successfully");
+      fetchEmployees();
+      closeEditModal();
+    } catch {
+      toast.error("Failed to update employee");
+    }
+  };
 
   useEffect(() => {
     fetchEmployees();
@@ -74,9 +105,27 @@ export default function ManageEmployee() {
                   <td className="p-3">{emp.phone}</td>
                   <td className="p-3">{emp.salary}</td>
                   <td className="p-3 flex gap-2">
-                    <button onClick={() => handleView(emp._id)} className="text-blue-500 hover:text-blue-700" title="View"><FaEye /></button>
-                    <button onClick={() => handleEdit(emp._id)} className="text-green-500 hover:text-green-700" title="Edit"><FaEdit /></button>
-                    <button onClick={() => handleDelete(emp._id)} className="text-red-500 hover:text-red-700" title="Delete"><FaTrash /></button>
+                    <button
+                      onClick={() => handleView(emp._id)}
+                      className="text-blue-500 hover:text-blue-700"
+                      title="View"
+                    >
+                      <FaEye />
+                    </button>
+                    <button
+                      onClick={() => handleEdit(emp._id)}
+                      className="text-green-500 hover:text-green-700"
+                      title="Edit"
+                    >
+                      <FaEdit />
+                    </button>
+                    <button
+                      onClick={() => handleDelete(emp._id)}
+                      className="text-red-500 hover:text-red-700"
+                      title="Delete"
+                    >
+                      <FaTrash />
+                    </button>
                   </td>
                 </tr>
               ))}
@@ -85,12 +134,17 @@ export default function ManageEmployee() {
         </div>
       )}
 
+      {/* View Modal */}
       {selectedEmployee && (
-        <div className="fixed inset-0 flex items-center justify-center z-50 p-4">
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/30 p-4">
           <div className="bg-white w-full max-w-lg p-6 rounded-lg shadow-lg overflow-y-auto max-h-[90vh]">
             <h3 className="text-xl font-semibold mb-4 text-center">Employee Details</h3>
             {selectedEmployee.profileImage && (
-              <img src={selectedEmployee.profileImage} alt="Profile" className="w-32 h-32 object-cover rounded-full mx-auto mb-4" />
+              <img
+                src={selectedEmployee.profileImage}
+                alt="Profile"
+                className="w-32 h-32 object-cover rounded-full mx-auto mb-4"
+              />
             )}
             <div className="space-y-2 text-sm">
               <p><strong>Name:</strong> {selectedEmployee.name}</p>
@@ -104,8 +158,88 @@ export default function ManageEmployee() {
               <p><strong>Updated At:</strong> {new Date(selectedEmployee.updatedAt).toLocaleString()}</p>
             </div>
             <div className="text-center mt-4">
-              <button onClick={closeModal} className="px-4 py-2 bg-indigo-600 text-white rounded hover:bg-indigo-700">Close</button>
+              <button
+                onClick={closeViewModal}
+                className="px-4 py-2 bg-indigo-600 text-white rounded hover:bg-indigo-700"
+              >
+                Close
+              </button>
             </div>
+          </div>
+        </div>
+      )}
+
+      {/* Edit Modal */}
+      {editModalOpen && selectedEmployeeForEdit && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/30 p-4">
+          <div className="bg-white w-full max-w-lg rounded-lg shadow-lg p-6 overflow-auto max-h-[90vh]">
+            <h2 className="text-xl font-semibold mb-4 text-center">Edit Employee</h2>
+            <form onSubmit={handleUpdateSubmit} className="space-y-3">
+              <input
+                type="text"
+                value={selectedEmployeeForEdit.name}
+                onChange={(e) => handleEditChange("name", e.target.value)}
+                placeholder="Name"
+                className="w-full p-2 border rounded"
+                required
+              />
+              <input
+                type="email"
+                value={selectedEmployeeForEdit.email}
+                onChange={(e) => handleEditChange("email", e.target.value)}
+                placeholder="Email"
+                className="w-full p-2 border rounded"
+                required
+              />
+              <input
+                type="text"
+                value={selectedEmployeeForEdit.phone}
+                onChange={(e) => handleEditChange("phone", e.target.value)}
+                placeholder="Phone"
+                className="w-full p-2 border rounded"
+                required
+              />
+              <input
+                type="text"
+                value={selectedEmployeeForEdit.designation}
+                onChange={(e) => handleEditChange("designation", e.target.value)}
+                placeholder="Designation"
+                className="w-full p-2 border rounded"
+                required
+              />
+              <input
+                type="text"
+                value={selectedEmployeeForEdit.department}
+                onChange={(e) => handleEditChange("department", e.target.value)}
+                placeholder="Department"
+                className="w-full p-2 border rounded"
+                required
+              />
+              <input
+                type="number"
+                value={selectedEmployeeForEdit.salary}
+                onChange={(e) => handleEditChange("salary", e.target.value)}
+                placeholder="Salary"
+                className="w-full p-2 border rounded"
+                required
+                min="0"
+              />
+              <div className="flex justify-end gap-2 pt-2">
+                <button
+                  type="button"
+                  onClick={closeEditModal}
+                  className="px-4 py-2 bg-gray-300 rounded hover:bg-gray-400"
+                >
+                  Cancel
+                </button>
+                <button
+                  type="submit"
+                  className="px-4 py-2 bg-indigo-600 text-white rounded hover:bg-indigo-700"
+                >
+                  Save Changes
+                </button>
+              </div>
+            </form>
           </div>
         </div>
       )}
