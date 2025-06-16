@@ -7,6 +7,7 @@ import { useNavigate } from "react-router-dom";
 export default function ManageEmployee() {
   const [employees, setEmployees] = useState([]);
   const [loading, setLoading] = useState(false);
+  const [selectedEmployee, setSelectedEmployee] = useState(null);
   const navigate = useNavigate();
 
   const fetchEmployees = async () => {
@@ -34,7 +35,12 @@ export default function ManageEmployee() {
   };
 
   const handleEdit = (id) => navigate(`/employee-update/${id}`);
-  const handleView = (id) => navigate(`/employee-view/${id}`);
+  const handleView = (id) => {
+    const employee = employees.find(e => e._id === id);
+    setSelectedEmployee(employee);
+  };
+
+  const closeModal = () => setSelectedEmployee(null);
 
   useEffect(() => {
     fetchEmployees();
@@ -76,6 +82,31 @@ export default function ManageEmployee() {
               ))}
             </tbody>
           </table>
+        </div>
+      )}
+
+      {selectedEmployee && (
+        <div className="fixed inset-0 flex items-center justify-center z-50 p-4">
+          <div className="bg-white w-full max-w-lg p-6 rounded-lg shadow-lg overflow-y-auto max-h-[90vh]">
+            <h3 className="text-xl font-semibold mb-4 text-center">Employee Details</h3>
+            {selectedEmployee.profileImage && (
+              <img src={selectedEmployee.profileImage} alt="Profile" className="w-32 h-32 object-cover rounded-full mx-auto mb-4" />
+            )}
+            <div className="space-y-2 text-sm">
+              <p><strong>Name:</strong> {selectedEmployee.name}</p>
+              <p><strong>Designation:</strong> {selectedEmployee.designation}</p>
+              <p><strong>Department:</strong> {selectedEmployee.department}</p>
+              <p><strong>Email:</strong> {selectedEmployee.email}</p>
+              <p><strong>Phone:</strong> {selectedEmployee.phone}</p>
+              <p><strong>Salary:</strong> {selectedEmployee.salary}</p>
+              <p><strong>Join Date:</strong> {new Date(selectedEmployee.joinDate).toLocaleDateString()}</p>
+              <p><strong>Created At:</strong> {new Date(selectedEmployee.createdAt).toLocaleString()}</p>
+              <p><strong>Updated At:</strong> {new Date(selectedEmployee.updatedAt).toLocaleString()}</p>
+            </div>
+            <div className="text-center mt-4">
+              <button onClick={closeModal} className="px-4 py-2 bg-indigo-600 text-white rounded hover:bg-indigo-700">Close</button>
+            </div>
+          </div>
         </div>
       )}
     </div>
