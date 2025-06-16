@@ -66,7 +66,7 @@ export default function EmployeeCreate() {
         await axios.post(import.meta.env.VITE_BACKEND_URL + "/api/employees", payload);
 
         toast.success("Employee created successfully!");
-        navigate("/employee-view");
+        navigate("/employee-create");
       } catch (error) {
         console.error("❌ Failed to create employee:", error.response?.data || error.message);
         toast.error("Failed to create employee.");
