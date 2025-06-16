@@ -3,9 +3,6 @@ import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import { Toaster } from 'react-hot-toast';
 import AdminDashboard from './pages/admin/adminDashboard';
 import EmployeeCreate from './pages/adminDashboardPages/employeeCreate';
-import EmployeeUpdate from './pages/adminDashboardPages/employeeUpdate';
-import EmployeeView from './pages/adminDashboardPages/employeeView';
-import EmployeeDelete from './pages/adminDashboardPages/employeeDelete';
 import ManageEmployee from './pages/adminDashboardPages/manageEmployee';
 
 function App() {
