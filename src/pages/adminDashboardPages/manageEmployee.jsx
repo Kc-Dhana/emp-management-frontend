@@ -19,7 +19,7 @@ export default function ManageEmployee() {
     try {
       setLoading(true);
       const res = await axios.get(
-        `${import.meta.env.VITE_BACKEND_URL}/api/employees?page=${page}&limit=10`
+        `${import.meta.env.VITE_BACKEND_URL}/api/employees?page=${page}&limit=5`
       );
       setEmployees(res.data.employees || []);
       setCurrentPage(res.data.currentPage || 1);
