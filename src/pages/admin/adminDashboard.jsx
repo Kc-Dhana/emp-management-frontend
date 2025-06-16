@@ -37,21 +37,14 @@ export default function AdminDashboard() {
           </button>
           <button
             className="flex items-center gap-2 p-3 text-gray-700 hover:bg-indigo-500 hover:text-white rounded"
-            onClick={() => handleNavigate("employee-update")}
+            onClick={() => handleNavigate("employee-manage")}
           >
-            <FiEdit size={20} /> Update Employee
+            <FiEdit size={20} /> Manage Employees
           </button>
           <button
             className="flex items-center gap-2 p-3 text-gray-700 hover:bg-indigo-500 hover:text-white rounded"
             onClick={() => handleNavigate("employee-view")}
           >
-            <FiEye size={20} /> View Employees
-          </button>
-          <button
-            className="flex items-center gap-2 p-3 text-red-600 hover:bg-red-600 hover:text-white rounded"
-            onClick={() => handleNavigate("employee-delete")}
-          >
-            <FiTrash2 size={20} /> Delete Employee
           </button>
         </nav>
       </aside>
