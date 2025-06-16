@@ -6,6 +6,7 @@ import EmployeeCreate from './pages/adminDashboardPages/employeeCreate';
 import EmployeeUpdate from './pages/adminDashboardPages/employeeUpdate';
 import EmployeeView from './pages/adminDashboardPages/employeeView';
 import EmployeeDelete from './pages/adminDashboardPages/employeeDelete';
+import ManageEmployee from './pages/adminDashboardPages/manageEmployee';
 
 function App() {
 
@@ -15,6 +16,7 @@ function App() {
       <Routes>
         <Route path="/" element={<AdminDashboard />}>
           <Route index element={<div>Welcome to Employee Management</div>} />
+          <Route path="employee-manage" element={<ManageEmployee />} />
           <Route path="employee-create" element={<EmployeeCreate />} />
           <Route path="employee-update" element={<EmployeeUpdate />} />
           <Route path="employee-view" element={<EmployeeView />} />
