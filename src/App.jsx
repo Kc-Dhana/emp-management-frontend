@@ -18,9 +18,6 @@ function App() {
           <Route index element={<div>Welcome to Employee Management</div>} />
           <Route path="employee-manage" element={<ManageEmployee />} />
           <Route path="employee-create" element={<EmployeeCreate />} />
-          <Route path="employee-update" element={<EmployeeUpdate />} />
-          <Route path="employee-view" element={<EmployeeView />} />
-          <Route path="employee-delete" element={<EmployeeDelete />} />
         </Route>
       </Routes>
     </Router>
